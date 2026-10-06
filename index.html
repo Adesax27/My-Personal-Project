@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to inn — Connect & Share</title>
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="inn.css" />
+
+  <style>
+    /* Password Input Wrapper with Eye Toggle */
+    .password-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .password-input-wrapper input {
+      width: 100%;
+      padding-right: 42px; /* Space for the eye button */
+    }
+
+    .toggle-password-btn {
+      position: absolute;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary, #64748b);
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+    }
+
+    .toggle-password-btn:hover {
+      color: var(--primary-color, #0d9488);
+    }
+
+    /* Live Password Requirements Styling */
+    .password-requirements {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background-color: var(--bg-color, #f8fafc);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color, #e2e8f0);
+    }
+
+    .req-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary, #64748b);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .req-item {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #ef4444; /* Red by default */
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s ease;
+    }
+
+    .req-item.valid {
+      color: #10b981; /* Green when satisfied */
+    }
+
+    .req-item i {
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <!-- Brand Header -->
+    <div class="auth-brand">
+      <div class="logo">
+        <span class="logo-heart"><i class="fa-solid fa-heart-pulse"></i></span>
+        <span class="logo-text">inn</span>
+      </div>
+      <p class="auth-subtitle">A global community connecting people living with chronic illnesses & terminal conditions.</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-card">
+      <!-- Auth Mode Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTabBtn" onclick="switchTab('login')">Log In</button>
+        <button class="auth-tab" id="signupTabBtn" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- LOG IN FORM -->
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> Username or Email</label>
+          <input type="text" id="loginUsername" placeholder="Enter your username or email" required />
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-lock"></i> Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="loginPassword" placeholder="••••••••" required />
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('loginPassword', this)" title="Toggle password visibility">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+          Log In <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- SIGN UP FORM -->
+      <form id="signupForm" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+          <input type="email" id="signupEmail" placeholder="yourname@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-lock"></i> Create Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="signupPassword" placeholder="••••••••" required />
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('signupPassword', this)" title="Toggle password visibility">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+
+          <!-- Visual Checklist for Compulsory Rules -->
+          <div class="password-requirements">
+            <span class="req-title">Password Must Contain:</span>
+            <div class="req-item" id="reqMin">
+              <i class="fa-solid fa-circle-xmark"></i> At least 8 characters
+            </div>
+            <div class="req-item" id="reqCap">
+              <i class="fa-solid fa-circle-xmark"></i> At least 1 capital letter (A-Z)
+            </div>
+            <div class="req-item" id="reqSpec">
+              <i class="fa-solid fa-circle-xmark"></i> At least 1 special character (!@#$%^&* etc.)
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+          Continue to Profile Setup <i class="fa-solid fa-user-gear"></i>
+        </button>
+      </form>
+    </div>
+
+    <p class="auth-footer-text">You are not alone in this journey. ❤️</p>
+  </div>
+
+  <script>
+    // Tab Switcher
+    function switchTab(mode) {
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      const loginBtn = document.getElementById('loginTabBtn');
+      const signupBtn = document.getElementById('signupTabBtn');
+
+      if (mode === 'login') {
+        loginForm.style.display = 'flex';
+        signupForm.style.display = 'none';
+        loginBtn.classList.add('active');
+        signupBtn.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'flex';
+        signupBtn.classList.add('active');
+        loginBtn.classList.remove('active');
+      }
+    }
+
+    // Toggle Password Visibility Function
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    // Password Validation Logic
+    const passwordInput = document.getElementById('signupPassword');
+    const reqMin = document.getElementById('reqMin');
+    const reqCap = document.getElementById('reqCap');
+    const reqSpec = document.getElementById('reqSpec');
+
+    function checkPassword(val) {
+      const hasMinLength = val.length >= 8;
+      const hasCapital = /[A-Z]/.test(val);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\\/\[\]]/.test(val);
+
+      // Update 8+ Characters Indicator
+      if (hasMinLength) {
+        reqMin.classList.add('valid');
+        reqMin.querySelector('i').className = 'fa-solid fa-circle-check';
+      } else {
+        reqMin.classList.remove('valid');
+        reqMin.querySelector('i').className = 'fa-solid fa-circle-xmark';
+      }
+
+      // Update Capital Letter Indicator
+      if (hasCapital) {
+        reqCap.classList.add('valid');
+        reqCap.querySelector('i').className = 'fa-solid fa-circle-check';
+      } else {
+        reqCap.classList.remove('valid');
+        reqCap.querySelector('i').className = 'fa-solid fa-circle-xmark';
+      }
+
+      // Update Special Character Indicator
+      if (hasSpecial) {
+        reqSpec.classList.add('valid');
+        reqSpec.querySelector('i').className = 'fa-solid fa-circle-check';
+      } else {
+        reqSpec.classList.remove('valid');
+        reqSpec.querySelector('i').className = 'fa-solid fa-circle-xmark';
+      }
+
+      return hasMinLength && hasCapital && hasSpecial;
+    }
+
+    // Real-time listener as user types
+    passwordInput.addEventListener('input', (e) => {
+      checkPassword(e.target.value);
+    });
+
+    // Handle Login -> Go directly to inn.html
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      
+      if (!localStorage.getItem('inn_user_profile')) {
+        const defaultUser = {
+          username: username || "Alex_Journey",
+          avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+          condition: "Chronic Health Community Member"
+        };
+        localStorage.setItem('inn_user_profile', JSON.stringify(defaultUser));
+      }
+      
+      window.location.href = "inn.html";
+    });
+
+    // Handle Sign Up -> Enforce Password Validation before proceeding to Profile Setup
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const password = passwordInput.value;
+
+      if (!checkPassword(password)) {
+        alert("Please fulfill all compulsory password requirements (8+ characters, 1 capital letter, 1 special character) before continuing.");
+        return;
+      }
+
+      const email = document.getElementById('signupEmail').value.trim();
+      sessionStorage.setItem('inn_signup_email', email);
+      
+      // Navigate to setup profile page
+      window.location.href = "setup-profile.html";
+    });
+  </script>
+</body>
+</html>

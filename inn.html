@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>inn</title>
+  <!-- Google Fonts & Icon Library -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <!-- Custom Styles Sheet -->
+  <link rel="stylesheet" href="inn.css">
+</head>
+<body>
+
+  <!-- TOP APP HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-heart"><i class="fa-solid fa-heart-pulse"></i></span>
+        <span class="logo-text">inn</span>
+      </div>
+    </div>
+
+    <!-- Search input for symptoms or conditions -->
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input type="text" id="searchInput" placeholder="Search conditions, symptoms (e.g. #Lyme, fatigue)..." />
+    </div>
+
+    <div class="header-right">
+      <button class="icon-btn" id="createPostBtn" title="Share Journey">
+        <i class="fa-solid fa-square-plus"></i>
+      </button>
+      <button class="icon-btn" id="openChatBtn" title="Messages">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span class="chat-badge" id="chatBadge">2</span>
+      </button>
+      <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <div class="user-avatar-small" id="profileNavBtn" title="Edit Profile" style="cursor: pointer;">
+        <img src="/images/ademola.jpg" alt="Profile">
+      </div>
+    </div>
+  </header>
+ 
+  <!-- SYMPTOM & CONDITION FILTER BAR -->
+  <nav class="filter-nav">
+    <div class="filter-scroll" id="filterTagsContainer">
+      <!-- Filter tags injected by JS -->
+    </div>
+  </nav>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="app-container">
+    
+    <!-- TOP STORIES TRAY -->
+    <section class="stories-container">
+      <div class="stories-scroll" id="storiesTray">
+        <!-- "Your Story" and peers' stories injected dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- Hidden file input to upload story media -->
+    <input type="file" id="storyFileInput" accept="image/*,video/*" style="display: none;" />
+
+    <!-- CONTINUOUS VIDEO FEED -->
+    <section class="feed-container" id="videoFeed">
+      <!-- Video posts injected by JS -->
+    </section>
+  </main>
+
+  <!-- STORY VIEWER MODAL -->
+  <div class="modal-overlay" id="storyViewerModal">
+    <div class="story-viewer-card">
+      <div class="story-progress-bar">
+        <div class="story-progress-fill" id="storyProgressFill"></div>
+      </div>
+      <div class="story-header">
+        <img id="storyUserAvatar" src="" alt="Avatar" />
+        <div>
+          <h4 id="storyUsername">Username</h4>
+          <span class="condition-badge" id="storyConditionTag">Condition</span>
+        </div>
+        <button class="close-modal-btn" id="closeStoryBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <!-- Media area supporting both Image and Video -->
+      <div class="story-content" id="storyMediaContainer">
+        <img id="storyImageMedia" src="" alt="Story Media" style="display: none;" />
+        <video id="storyVideoMedia" playsinline autoplay muted style="display: none;"></video>
+        <p id="storyCaptionText"></p>
+      </div>
+
+      <!-- Story Footer with Reply Input and Like Button -->
+      <div class="story-footer-actions">
+        <div class="story-reply-box">
+          <input type="text" placeholder="Send a message of support..." id="storyReplyInput" />
+          <button id="sendStoryReplyBtn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+        <!-- Heart / Like button & count -->
+        <button class="story-like-btn" id="storyLikeBtn" title="Like status">
+          <i class="fa-regular fa-heart" id="storyLikeIcon"></i>
+          <span class="like-count" id="storyLikeCount">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMENTS DRAWER MODAL -->
+  <div class="drawer-overlay" id="commentsDrawer">
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <h3>Comments <span id="commentCountBadge">(0)</span></h3>
+        <button class="close-modal-btn" id="closeCommentsBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="comments-list" id="commentsList">
+        <!-- Rendered Comments -->
+      </div>
+
+      <div class="comment-input-area">
+        <div class="reply-target-banner" id="replyTargetBanner" style="display: none;">
+          <span>Replying to <strong id="replyingToUser">@user</strong></span>
+          <button id="cancelReplyBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form class="comment-form" id="commentForm">
+          <input type="text" id="commentInput" placeholder="Add a supportive comment..." required />
+          <button type="submit">Post</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script src="inn.js"></script>
+</body>
+</html>

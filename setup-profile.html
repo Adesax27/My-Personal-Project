@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Setup — inn</title>
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="inn.css" />
+
+  <style>
+    .avatar-picker-container {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .avatar-option {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .avatar-option.selected {
+      border-color: var(--primary-color, #0d9488);
+      transform: scale(1.08);
+      box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+    }
+    .avatar-preview {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-color, #0d9488);
+      margin: 0 auto 15px auto;
+      display: block;
+    }
+    .phone-group {
+      display: flex;
+      gap: 8px;
+    }
+    .phone-group select {
+      width: 35%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color, #cbd5e1);
+      font-family: inherit;
+    }
+    .phone-group input {
+      width: 65%;
+    }
+    /* Health Slider Styling */
+    .health-slider-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .health-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(to right, #ef4444 0%, #f97316 50%, #10b981 100%);
+      outline: none;
+      cursor: pointer;
+    }
+    .health-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #0d9488;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .status-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: background-color 0.3s ease;
+    }
+  </style>
+</head>
+<body class="auth-body">
+
+  <div class="auth-container" style="max-width: 550px; margin: 30px auto;">
+    <div class="auth-brand">
+      <div class="logo">
+        <span class="logo-heart"><i class="fa-solid fa-heart-pulse"></i></span>
+        <span class="logo-text">inn</span>
+      </div>
+      <p class="auth-subtitle" id="authSubtitle">Complete your health profile to join the community.</p>
+    </div>
+
+    <div class="auth-card">
+      <h2 id="formHeading" style="font-size: 1.25rem; font-weight: 700; text-align: center; margin-bottom: 20px; color: var(--text-primary, #1e293b);">
+        <i class="fa-solid fa-user-pen" style="color: var(--primary-color, #0d9488);"></i> Setup Profile
+      </h2>
+
+      <form id="profileSetupForm" class="auth-form">
+        <img id="currentAvatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="avatar-preview" alt="Avatar Preview" />
+
+        <!-- Avatar Selection -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-image"></i> Choose Avatar</label>
+          <div class="avatar-picker-container">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="avatar-option selected" onclick="selectAvatar(this)" alt="Avatar 1">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" class="avatar-option" onclick="selectAvatar(this)" alt="Avatar 2">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" class="avatar-option" onclick="selectAvatar(this)" alt="Avatar 3">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" class="avatar-option" onclick="selectAvatar(this)" alt="Avatar 4">
+          </div>
+          <input type="url" id="customAvatarUrl" placeholder="Or paste image URL" oninput="updateAvatarFromUrl(this.value)" />
+        </div>
+
+        <!-- Basic User Information -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> Display Username</label>
+          <input type="text" id="setupUsername" placeholder="e.g. Alex_Warrior" required />
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+          <input type="email" id="setupEmail" placeholder="yourname@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+          <div class="phone-group">
+            <select id="setupCountryCode">
+              <option value="+234">🇳🇬 +234 (NG)</option>
+              <option value="+1">🇺🇸 +1 (US)</option>
+              <option value="+44">🇬🇧 +44 (UK)</option>
+              <option value="+233">🇬🇭 +233 (GH)</option>
+              <option value="+27">🇿🇦 +27 (ZA)</option>
+              <option value="+91">🇮🇳 +91 (IN)</option>
+            </select>
+            <input type="tel" id="setupPhone" placeholder="8012345678" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-location-dot"></i> Residential Address</label>
+          <input type="text" id="setupAddress" placeholder="e.g. Surulere, Lagos, Nigeria" required />
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-venus-mars"></i> Gender Pronouns</label>
+          <select id="setupGender" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color, #cbd5e1);" required>
+            <option value="" disabled selected>Select Gender / Pronoun</option>
+            <option value="He/Him">He / Him</option>
+            <option value="She/Her">She / Her</option>
+            <option value="Neutral (They/Them)">Neutral (They / Them)</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-icons"></i> Hobbies & Interests</label>
+          <input type="text" id="setupHobbies" placeholder="e.g. Saxophone, Reading, Music, Gardening" />
+        </div>
+
+        <!-- Health Specific Details -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-notes-medical"></i> Name of Illness / Health Focus</label>
+          <input type="text" id="setupIllness" placeholder="e.g. Dysautonomia, Lyme Disease, Lymphoma" required />
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-stethoscope"></i> Symptoms Experienced</label>
+          <textarea id="setupSymptoms" rows="2" placeholder="e.g. Brain fog, Joint pain, Fatigue, High heart rate" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color, #cbd5e1); font-family: inherit;"></textarea>
+        </div>
+
+        <!-- Interactive Health Level Range Slider -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-heart-pulse"></i> Current Health Condition Meter</label>
+          <div class="health-slider-card">
+            <div class="slider-header">
+              <span>Overall Feeling</span>
+              <span id="healthValDisplay" style="color: #0d9488; font-size: 1.1rem;">50%</span>
+            </div>
+            <input type="range" id="healthSlider" class="health-slider" min="0" max="100" value="50" oninput="updateHealthMeter(this.value)">
+            <div>
+              <span id="healthStatusBadge" class="status-badge" style="background-color: #f97316;">Improving (50%+)</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="auth-submit-btn">
+          Save Profile & Continue <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let selectedAvatarUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80";
+    let isSignUpMode = false;
+    let isEditMode = false;
+
+    function selectAvatar(element) {
+      document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
+      element.classList.add('selected');
+      selectedAvatarUrl = element.src;
+      document.getElementById('currentAvatarPreview').src = selectedAvatarUrl;
+      document.getElementById('customAvatarUrl').value = '';
+    }
+
+    function updateAvatarFromUrl(url) {
+      if (url.trim()) {
+        selectedAvatarUrl = url.trim();
+        document.getElementById('currentAvatarPreview').src = selectedAvatarUrl;
+        document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
+      }
+    }
+
+    // Dynamic Slider Color & Text Logic
+    function updateHealthMeter(val) {
+      const display = document.getElementById('healthValDisplay');
+      const badge = document.getElementById('healthStatusBadge');
+      display.innerText = val + '%';
+
+      if (val < 50) {
+        badge.style.backgroundColor = '#ef4444'; // Red
+        badge.innerText = 'Worst / Critical Condition';
+      } else if (val < 100) {
+        badge.style.backgroundColor = '#f97316'; // Orange
+        badge.innerText = 'Improving & Recovering (50%+)';
+      } else {
+        badge.style.backgroundColor = '#10b981'; // Green
+        badge.innerText = '100% Perfect & Ready to Take the World! 🚀';
+      }
+    }
+
+    // Initialize and handle page load (Distinguish between New Sign-Up vs Edit Profile)
+    window.addEventListener('DOMContentLoaded', () => {
+      const pendingAcc = JSON.parse(sessionStorage.getItem('inn_pending_account') || 'null');
+      const existingProfile = JSON.parse(localStorage.getItem('inn_user_profile') || 'null');
+
+      // PRIORITIZE Pending Sign-Up session first to avoid showing previous user data
+      if (pendingAcc && pendingAcc.email) {
+        isSignUpMode = true;
+        document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-user-plus" style="color: var(--primary-color, #0d9488);"></i> Complete Sign Up';
+        document.getElementById('authSubtitle').innerText = 'Please complete your new profile details below.';
+        document.getElementById('setupEmail').value = pendingAcc.email;
+        updateHealthMeter(50);
+      } 
+      // If NO pending sign-up exists, load existing profile to Edit
+      else if (existingProfile && existingProfile.username) {
+        isEditMode = true;
+        document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-user-pen" style="color: var(--primary-color, #0d9488);"></i> Edit Profile';
+        document.getElementById('authSubtitle').innerText = 'Update your personal and health information.';
+        document.getElementById('submitBtn').innerHTML = 'Save Changes <i class="fa-solid fa-check"></i>';
+
+        // Pre-fill existing user data
+        document.getElementById('setupUsername').value = existingProfile.username || '';
+        document.getElementById('setupEmail').value = existingProfile.email || '';
+        document.getElementById('setupCountryCode').value = existingProfile.countryCode || '+234';
+        document.getElementById('setupPhone').value = existingProfile.phone || '';
+        document.getElementById('setupAddress').value = existingProfile.address || '';
+        document.getElementById('setupGender').value = existingProfile.gender || '';
+        document.getElementById('setupHobbies').value = existingProfile.hobbies || '';
+        document.getElementById('setupIllness').value = existingProfile.illness || existingProfile.condition || '';
+        document.getElementById('setupSymptoms').value = existingProfile.symptoms || '';
+
+        const savedHealth = existingProfile.healthScore || 50;
+        document.getElementById('healthSlider').value = savedHealth;
+        updateHealthMeter(savedHealth);
+
+        if (existingProfile.avatar) {
+          selectedAvatarUrl = existingProfile.avatar;
+          document.getElementById('currentAvatarPreview').src = selectedAvatarUrl;
+        }
+      }
+    });
+
+    // Save Form Handler
+    document.getElementById('profileSetupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const userProfileData = {
+        username: document.getElementById('setupUsername').value.trim(),
+        email: document.getElementById('setupEmail').value.trim(),
+        countryCode: document.getElementById('setupCountryCode').value,
+        phone: document.getElementById('setupPhone').value.trim(),
+        address: document.getElementById('setupAddress').value.trim(),
+        gender: document.getElementById('setupGender').value,
+        hobbies: document.getElementById('setupHobbies').value.trim(),
+        illness: document.getElementById('setupIllness').value.trim(),
+        symptoms: document.getElementById('setupSymptoms').value.trim(),
+        healthScore: document.getElementById('healthSlider').value,
+        avatar: selectedAvatarUrl
+      };
+
+      // Save as active user profile in localStorage
+      localStorage.setItem('inn_user_profile', JSON.stringify(userProfileData));
+
+      // Clear pending signup session after saving
+      sessionStorage.removeItem('inn_pending_account');
+
+      if (isSignUpMode) {
+        window.location.href = "inn.html?mode=login&registered=true";
+      } else {
+        window.location.href = "inn.html";
+      }
+    });
+  </script>
+</body>
+</html>

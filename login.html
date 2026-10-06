@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to inn — Connect & Share</title>
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="inn.css" />
+
+  <style>
+    /* Password Input Wrapper with Eye Toggle */
+    .password-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .password-input-wrapper input {
+      width: 100%;
+      padding-right: 42px; /* Space for the eye button */
+    }
+
+    .toggle-password-btn {
+      position: absolute;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary, #64748b);
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+    }
+
+    .toggle-password-btn:hover {
+      color: var(--primary-color, #0d9488);
+    }
+
+    /* Live Password Requirements Styling */
+    .password-requirements {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background-color: var(--bg-color, #f8fafc);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color, #e2e8f0);
+    }
+
+    .req-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary, #64748b);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .req-item {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #ef4444; /* Red by default */
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s ease;
+    }
+
+    .req-item.valid {
+      color: #10b981; /* Green when satisfied */
+    }
+
+    .req-item i {
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <!-- Brand Header -->
+    <div class="auth-brand">
+      <div class="logo">
+        <span class="logo-heart"><i class="fa-solid fa-heart-pulse"></i></span>
+        <span class="logo-text">inn</span>
+      </div>
+      <p class="auth-subtitle">A global community connecting people living with chronic illnesses & terminal conditions.</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-card">
+      <!-- Auth Mode Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Log In</button>
+        <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- Log In Form -->
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="hello@example.com" required />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="loginPassword" placeholder="Enter your password" required />
+            <button type="button" class="toggle-password-btn" onclick="togglePassword('loginPassword', this)">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="submit-post-btn">Log In</button>
+      </form>
+
+      <!-- Sign Up Form (Hidden by default) -->
+      <form id="signupForm" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" placeholder="e.g. Alex_Journey" required />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="hello@example.com" required />
+        </div>
+        <div class="form-group">
+          <label>Create Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="signupPassword" placeholder="Minimum 8 characters" required />
+            <button type="button" class="toggle-password-btn" onclick="togglePassword('signupPassword', this)">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <!-- Live Password Requirements -->
+          <div class="password-requirements">
+            <span class="req-title">Password must contain:</span>
+            <span class="req-item" id="req-length"><i class="fa-solid fa-xmark"></i> At least 8 characters</span>
+            <span class="req-item" id="req-upper"><i class="fa-solid fa-xmark"></i> One uppercase letter</span>
+            <span class="req-item" id="req-number"><i class="fa-solid fa-xmark"></i> One number</span>
+            <span class="req-item" id="req-special"><i class="fa-solid fa-xmark"></i> One special character (!@#$%)</span>
+          </div>
+        </div>
+        <button type="submit" class="submit-post-btn" id="signupSubmitBtn" disabled>Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // --- TAB SWITCHING LOGIC ---
+    function switchTab(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      const tabLogin = document.getElementById('tabLogin');
+      const tabSignup = document.getElementById('tabSignup');
+
+      if (tab === 'login') {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+        tabLogin.classList.add('active');
+        tabSignup.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        tabSignup.classList.add('active');
+        tabLogin.classList.remove('active');
+      }
+    }
+
+    // --- PASSWORD VISIBILITY TOGGLE ---
+    function togglePassword(inputId, btnElement) {
+      const input = document.getElementById(inputId);
+      const icon = btnElement.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // --- LIVE PASSWORD VALIDATION ---
+    const signupPassword = document.getElementById('signupPassword');
+    const signupBtn = document.getElementById('signupSubmitBtn');
+    
+    const reqLength = document.getElementById('req-length');
+    const reqUpper = document.getElementById('req-upper');
+    const reqNumber = document.getElementById('req-number');
+    const reqSpecial = document.getElementById('req-special');
+
+    signupPassword.addEventListener('input', function(e) {
+      const val = e.target.value;
+      
+      // Check rules
+      const hasLength = val.length >= 8;
+      const hasUpper = /[A-Z]/.test(val);
+      const hasNumber = /[0-9]/.test(val);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(val);
+
+      // Update UI for Length
+      updateRequirement(reqLength, hasLength);
+      // Update UI for Uppercase
+      updateRequirement(reqUpper, hasUpper);
+      // Update UI for Number
+      updateRequirement(reqNumber, hasNumber);
+      // Update UI for Special Character
+      updateRequirement(reqSpecial, hasSpecial);
+
+      // Enable submit button only if all are valid
+      if (hasLength && hasUpper && hasNumber && hasSpecial) {
+        signupBtn.disabled = false;
+        signupBtn.style.opacity = '1';
+      } else {
+        signupBtn.disabled = true;
+        signupBtn.style.opacity = '0.5';
+      }
+    });
+
+    function updateRequirement(element, isValid) {
+      const icon = element.querySelector('i');
+      if (isValid) {
+        element.classList.add('valid');
+        icon.classList.remove('fa-xmark');
+        icon.classList.add('fa-check');
+      } else {
+        element.classList.remove('valid');
+        icon.classList.remove('fa-check');
+        icon.classList.add('fa-xmark');
+      }
+    }
+
+    // --- FORM SUBMISSIONS ---
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Redirect to main feed on successful login
+      window.location.href = 'index.html'; 
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Redirect to the profile setup page (referenced in your JS) on signup
+      window.location.href = 'setup-profile.html'; 
+    });
+  </script>
+</body>
+</html>
